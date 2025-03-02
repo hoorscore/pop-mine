@@ -168,4 +168,4 @@ class SettingsPage extends StatelessWidget {
   // Divider widget
   Widget divider() {
     return Divider(color: Colors.white, thickness: 1, height: 20);
-  }
+  } }
