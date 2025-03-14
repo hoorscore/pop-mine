@@ -1,9 +1,68 @@
-import 'package:flutter/material.dart';
+'package:flutter/material.dart';
 
-class PrivacyPolicyPage extends StatelessWidget {
+class PrivacyPolicyPage extends StatefulWidget {
+  @override
+  _PrivacyPolicyPageState createState() => _PrivacyPolicyPageState();
+}
+
+class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
+  bool isAdmin = true; // Set to true for admin access
+  String privacyText =
+      "آخر تحديث 23 نوفمبر 2024\n\nتصف سياسة الخصوصية الإجراءات بشأن جمع معلوماتك واستخدامها...\n\n"
+      "نحن فريق PopList نستخدم بياناتك الشخصية لتوفير الخدمة وتحسينها. لذا باستخدامك هذه الخدمة أنت تقر بأنك توافق على جمع واستخدام البيانات وفقًا لسياسة الخصوصية.\n\n"
+      "ونوّد التنويه بأنه سيتم إبلاغك بالتغييرات في حال تم تحديث سياسة الخصوصية.";
+
+  // Function to edit privacy policy
+  void _editPrivacyPolicy() {
+    TextEditingController controller = TextEditingController(text: privacyText);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("تعديل سياسة الخصوصية"),
+          content: TextField(
+            controller: controller,
+            maxLines: 10,
+            decoration: InputDecoration(border: OutlineInputBorder()),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("إلغاء"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  privacyText = controller.text;
+                });
+                Navigator.pop(context);
+              },
+              child: Text("حفظ"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text("سياسة الخصوصية", style: TextStyle(fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          if (isAdmin) // Show edit button only for admin
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: _editPrivacyPolicy,
+            ),
+        ],
+      ),
       body: Stack(
         children: [
           // Background Image
@@ -15,79 +74,28 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
             ),
           ),
-          // Content
-          Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.only(top: 50, left: 15, right: 15),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Privacy Policy Content
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Spacer(),
-                    Text(
-                      "سياسة الخصوصية",
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(Icons.privacy_tip, color: Colors.white, size: 30),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Privacy Policy Content
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "مقدمة",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "هذه سياسة الخصوصية توضح كيفية جمع المعلومات واستخدامها...",
-                          style: TextStyle(fontSize: 18, color: Colors.white70),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          "المعلومات التي نجمعها",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "نحن نقوم بجمع المعلومات مثل الاسم، البريد الإلكتروني، وغيرها...",
-                          style: TextStyle(fontSize: 18, color: Colors.white70),
-                        ),
-                        SizedBox(height: 20),
-                        // Add more sections if needed
-                      ],
+                    child: Text(
+                      privacyText,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, height: 1.5, color: Colors.black87),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),
