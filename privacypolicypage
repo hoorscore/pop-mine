@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting the date
+import 'package:intl/date_symbol_data_local.dart';
 
 class PrivacyPolicyPage extends StatefulWidget {
   @override
@@ -7,10 +9,23 @@ class PrivacyPolicyPage extends StatefulWidget {
 
 class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
   bool isAdmin = true; // Set to true for admin access
+
+  // Store last updated date
+  DateTime lastUpdated = DateTime.now();
+
+  // Privacy policy content
   String privacyText =
-      "آخر تحديث 23 نوفمبر 2024\n\nتصف سياسة الخصوصية الإجراءات بشأن جمع معلوماتك واستخدامها...\n\n"
+      "تصف سياسة الخصوصية الإجراءات بشأن جمع معلوماتك واستخدامها...\n\n"
       "نحن فريق PopList نستخدم بياناتك الشخصية لتوفير الخدمة وتحسينها. لذا باستخدامك هذه الخدمة أنت تقر بأنك توافق على جمع واستخدام البيانات وفقًا لسياسة الخصوصية.\n\n"
       "ونوّد التنويه بأنه سيتم إبلاغك بالتغييرات في حال تم تحديث سياسة الخصوصية.";
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('ar', null).then((_) {
+      setState(() {}); // Rebuild the widget after initialization
+    });
+  }
 
   // Function to edit privacy policy
   void _editPrivacyPolicy() {
@@ -34,6 +49,7 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
               onPressed: () {
                 setState(() {
                   privacyText = controller.text;
+                  lastUpdated = DateTime.now(); // Update the last modified date
                 });
                 Navigator.pop(context);
               },
@@ -43,6 +59,11 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
         );
       },
     );
+  }
+
+  // Function to format date in Arabic
+  String getFormattedDate() {
+    return DateFormat('d MMMM yyyy', 'ar').format(lastUpdated);
   }
 
   @override
@@ -105,10 +126,32 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                         color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        privacyText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, height: 1.5, color: Colors.black87),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Display dynamic last updated date
+                          Text(
+                            "آخر تحديث ${getFormattedDate()}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          // Privacy policy text
+                          Text(
+                            privacyText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              height: 1.5,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -121,3 +164,4 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
     );
   }
 }
+
